@@ -58,8 +58,16 @@ public unsafe class MyHook : IDisposable
 
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        try
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        catch (Exception e)
+        {
+            Plugin.Logger.Info("Already disposed");
+        }
+        
     }
 
     protected void Dispose(bool disposing)
@@ -70,6 +78,9 @@ public unsafe class MyHook : IDisposable
         }
 
         _onHitboxLoadedHook?.Disable();
+        _onHitboxLoadedHook?.Dispose();
+
+        _onHitboxUpdatedHook?.Disable();
         _onHitboxLoadedHook?.Dispose();
 
     }
