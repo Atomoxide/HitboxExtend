@@ -1,10 +1,11 @@
-﻿using Dalamud.Game.Command;
+using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using System.IO;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using SamplePlugin.Windows;
+
 
 namespace SamplePlugin;
 
@@ -14,6 +15,10 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static ITextureProvider TextureProvider { get; private set; } = null!;
     [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
 
+    public static IGameInteropProvider GameInteropProvider { get; private set; } = null!;
+
+    public static IPluginLog Logger { get; private set; } = null!;
+
     private const string CommandName = "/pmycommand";
 
     public Configuration Configuration { get; init; }
@@ -22,7 +27,7 @@ public sealed class Plugin : IDalamudPlugin
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
 
-    public Plugin()
+    public Plugin(IGameInteropProvider gameInteropProvider, IPluginLog logger)
     {
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
 
@@ -48,6 +53,12 @@ public sealed class Plugin : IDalamudPlugin
 
         // Adds another button that is doing the same but for the main ui of the plugin
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
+
+        GameInteropProvider = gameInteropProvider;
+        Logger = logger;
+
+
+        MyHook.Initialize();
     }
 
     public void Dispose()
@@ -58,6 +69,7 @@ public sealed class Plugin : IDalamudPlugin
         MainWindow.Dispose();
 
         CommandManager.RemoveHandler(CommandName);
+        MyHook.Instance?.Dispose();
     }
 
     private void OnCommand(string command, string args)
