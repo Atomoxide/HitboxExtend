@@ -4,10 +4,10 @@ using Dalamud.Plugin;
 using System.IO;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using SamplePlugin.Windows;
+using TestPlugin.Windows;
 
 
-namespace SamplePlugin;
+namespace TestPlugin;
 
 public sealed class Plugin : IDalamudPlugin
 {

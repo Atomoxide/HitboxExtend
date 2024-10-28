@@ -1,8 +1,9 @@
 using Dalamud.Hooking;
 using System;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using System.Linq.Expressions;
 
-namespace SamplePlugin;
+namespace TestPlugin;
 
 // declare delegate
 
@@ -10,7 +11,9 @@ namespace SamplePlugin;
 public unsafe class MyHook : IDisposable
 {
     private delegate void OnLoadingHitbox(GameObject* gameObject, float unkownVal);
+    private delegate void OnUpdatingHitbox(GameObject* gameObject);
     private Hook<OnLoadingHitbox>? _onHitboxLoadedHook;
+    private Hook<OnUpdatingHitbox>? _onHitboxUpdatedHook;
 
     public static void Initialize() { Instance = new MyHook(); }
 
@@ -29,7 +32,20 @@ public unsafe class MyHook : IDisposable
         }
         catch (Exception e)
         {
-            Plugin.Logger.Error("Error initiating hooks: " + e.Message);
+            Plugin.Logger.Error("Error initiating OnloadingHitbox hooks: " + e.Message);
+        }
+
+        try
+        {
+            _onHitboxUpdatedHook = Plugin.GameInteropProvider.HookFromSignature<OnUpdatingHitbox>(
+                    "40 53 48 83 EC 20 66 83 B9 98 06 00 00 00",
+                    onHitboxUpdated
+                );
+                _onHitboxUpdatedHook?.Enable();
+        }
+        catch (Exception e)
+        {
+            Plugin.Logger.Error("Error initiating OnUpdatingHitbox hooks: " + e.Message);
         }
 
     }
@@ -82,7 +98,35 @@ public unsafe class MyHook : IDisposable
         }
         catch (Exception ex)
         {
-            Plugin.Logger.Error(ex, "An error occured when editing hitbox.");
+            Plugin.Logger.Error(ex, "An error occured when editing hitbox during hitbox loading.");
+        }
+    }
+
+    private unsafe void onHitboxUpdated(GameObject* gameObject)
+    {
+        //try
+        //{
+        //    Plugin.Logger.Information("Hooked Here!");
+        //}
+        //catch (Exception ex)
+        //{
+        //    Plugin.Logger.Error(ex, "An error occured when handling hook.");
+        //}
+
+        // We're intentionally suppressing nullability checks. You can only get to this code if the hook exists.
+        // There's no way this can ever be null.
+        this._onHitboxUpdatedHook?.Original(gameObject);
+
+        try
+        {
+            //float hitboxRadius = gameObject->HitboxRadius;
+            //string result = $"The value is {hitboxRadius:F2}";
+            //Plugin.Logger.Information(result);
+            gameObject->HitboxRadius += 3.0f;
+        }
+        catch (Exception ex)
+        {
+            Plugin.Logger.Error(ex, "An error occured when editing hitbox during hitbox updating.");
         }
     }
 }
