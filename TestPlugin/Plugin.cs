@@ -4,7 +4,7 @@ using Dalamud.Plugin;
 using System.IO;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-//using TestPlugin.Windows;
+using TestPlugin.Windows;
 
 
 namespace TestPlugin;
@@ -24,39 +24,40 @@ public sealed class Plugin : IDalamudPlugin
 
     public Configuration Configuration { get; init; }
 
-    public readonly WindowSystem WindowSystem = new("SamplePlugin");
-    //private ConfigWindow ConfigWindow { get; init; }
-    //private MainWindow MainWindow { get; init; }
+    public readonly WindowSystem WindowSystem = new("Extend Hitbox");
+    private ConfigWindow ConfigWindow { get; init; }
+    private MainWindow MainWindow { get; init; }
 
     public Plugin(IGameInteropProvider gameInteropProvider, IPluginLog logger)
     {
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
 
         // you might normally want to embed resources and load them from the manifest stream
-        var goatImagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
+        var yoship = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "yoship.png");
 
-        //ConfigWindow = new ConfigWindow(this);
-        //MainWindow = new MainWindow(this, goatImagePath);
+        ConfigWindow = new ConfigWindow(this);
+        MainWindow = new MainWindow(this, yoship);
 
-        //WindowSystem.AddWindow(ConfigWindow);
-        //WindowSystem.AddWindow(MainWindow);
+        WindowSystem.AddWindow(ConfigWindow);
+        WindowSystem.AddWindow(MainWindow);
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
-            HelpMessage = "/hbe on/off: toggle on/off"
+            HelpMessage = "/hbe on: toggle on\n/hbe off: toggle off\n/hbe config: open config window"
         });
 
-        //PluginInterface.UiBuilder.Draw += DrawUI;
+        PluginInterface.UiBuilder.Draw += DrawUI;
 
         // This adds a button to the plugin installer entry of this plugin which allows
         // to toggle the display status of the configuration ui
-        //PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUI;
+        PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUI;
 
         // Adds another button that is doing the same but for the main ui of the plugin
-        //PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
+        PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
 
         GameInteropProvider = gameInteropProvider;
         Logger = logger;
+        Configuration.IsTurnedOn = false;
         
     }
 
@@ -64,11 +65,10 @@ public sealed class Plugin : IDalamudPlugin
     {
         WindowSystem.RemoveAllWindows();
 
-        //ConfigWindow.Dispose();
-        //MainWindow.Dispose();
+        ConfigWindow.Dispose();
+        MainWindow.Dispose();
 
         CommandManager.RemoveHandler(CommandName);
-        //MyHook.Initialize();
         MyHook.Instance?.Dispose();
     }
 
@@ -76,24 +76,28 @@ public sealed class Plugin : IDalamudPlugin
     {
         // in response to the slash command, just toggle the display status of our main ui
         //Logger.Information("args:" + args);
-        //ToggleMainUI();
-        if (args == "on")
+        if (args == "on" && !Configuration.IsTurnedOn)
         {
             MyHook.Initialize();
             Logger.Info("plugin turned on");
             Chat.Print("[Hitbox Extend] Turned on");
+            Configuration.IsTurnedOn = true;
         }
-        else if (args == "off") 
+        else if (args == "off" && Configuration.IsTurnedOn) 
         {
             MyHook.Instance?.Dispose();
             Logger.Info("plugin turned off");
             Chat.Print("[Hitbox Extend] Turned off");
-
+            Configuration.IsTurnedOn = false;
+        }
+        else if (args == "config")
+        {
+            ToggleConfigUI();
         }
     }
 
-    //private void DrawUI() => WindowSystem.Draw();
+    private void DrawUI() => WindowSystem.Draw();
 
-    //public void ToggleConfigUI() => ConfigWindow.Toggle();
-    //public void ToggleMainUI() => MainWindow.Toggle();
+    public void ToggleConfigUI() => ConfigWindow.Toggle();
+    public void ToggleMainUI() => MainWindow.Toggle();
 }

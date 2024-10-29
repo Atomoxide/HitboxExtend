@@ -23,7 +23,7 @@ public unsafe class MyHook : IDisposable
         try
         {
             _onHitboxLoadedHook = Plugin.GameInteropProvider.HookFromSignature<OnLoadingHitbox>(
-                    "48 89 5C 24 08 57 48 83 EC 20 48 8B D9 E8 1E 1E FC FF",
+                    "48 89 5C 24 08 57 48 83 EC 20 48 8B D9 E8 ?? ?? ?? ?? 48 8D 8B A0 01",
                     OnHitboxLoaded
                 );
 
@@ -65,7 +65,7 @@ public unsafe class MyHook : IDisposable
         }
         catch (Exception e)
         {
-            Plugin.Logger.Info("Already disposed");
+            Plugin.Logger.Info("Already disposed: " + e.Message);
         }
         
     }
@@ -87,24 +87,10 @@ public unsafe class MyHook : IDisposable
 
     private unsafe void OnHitboxLoaded(GameObject* gameObject, float unkownVal)
     {
-        //try
-        //{
-        //    Plugin.Logger.Information("Hooked Here!");
-        //}
-        //catch (Exception ex)
-        //{
-        //    Plugin.Logger.Error(ex, "An error occured when handling hook.");
-        //}
-
-        // We're intentionally suppressing nullability checks. You can only get to this code if the hook exists.
-        // There's no way this can ever be null.
         this._onHitboxLoadedHook?.Original(gameObject, unkownVal);
 
         try
         {
-            //float hitboxRadius = gameObject->HitboxRadius;
-            //string result = $"The value is {hitboxRadius:F2}";
-            //Plugin.Logger.Information(result);
             gameObject->HitboxRadius += 3.0f;
         }
         catch (Exception ex)
@@ -115,24 +101,10 @@ public unsafe class MyHook : IDisposable
 
     private unsafe void onHitboxUpdated(GameObject* gameObject)
     {
-        //try
-        //{
-        //    Plugin.Logger.Information("Hooked Here!");
-        //}
-        //catch (Exception ex)
-        //{
-        //    Plugin.Logger.Error(ex, "An error occured when handling hook.");
-        //}
-
-        // We're intentionally suppressing nullability checks. You can only get to this code if the hook exists.
-        // There's no way this can ever be null.
         this._onHitboxUpdatedHook?.Original(gameObject);
 
         try
         {
-            //float hitboxRadius = gameObject->HitboxRadius;
-            //string result = $"The value is {hitboxRadius:F2}";
-            //Plugin.Logger.Information(result);
             gameObject->HitboxRadius += 3.0f;
         }
         catch (Exception ex)
