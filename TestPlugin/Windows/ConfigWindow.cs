@@ -39,6 +39,6 @@ public class ConfigWindow : Window, IDisposable
             Configuration.IsTurnedOn = configValue;
             Configuration.UpdateStatus();
         }
-        ImGui.Text("Change only apply to new selectable targets. \nYou need to leave the current map zone \nand then come back to refresh target hitboxes");
+        ImGui.Text("Change only applies to new selectable targets. \nYou need to leave the current map zone \nand then come back to refresh target hitboxes");
     }
 }

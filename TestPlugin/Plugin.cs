@@ -5,6 +5,7 @@ using System.IO;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using TestPlugin.Windows;
+using Dalamud.Game.Gui.Toast;
 
 
 namespace TestPlugin;
@@ -15,6 +16,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static ITextureProvider TextureProvider { get; private set; } = null!;
     [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
     [PluginService] internal static IChatGui Chat { get; private set; }
+    [PluginService] public static IToastGui Toasts { get; private set; }
 
     public static IGameInteropProvider GameInteropProvider { get; private set; } = null!;
 
@@ -81,6 +83,8 @@ public sealed class Plugin : IDalamudPlugin
             MyHook.Initialize();
             Logger.Info("plugin turned on");
             Chat.Print("[Hitbox Extend] Turned on");
+            Toasts.ShowQuest("Hitbox Extend Turned on",
+                    new QuestToastOptions() { PlaySound = true, DisplayCheckmark = true });
             Configuration.IsTurnedOn = true;
         }
         else if (args == "off" && Configuration.IsTurnedOn) 
@@ -88,6 +92,8 @@ public sealed class Plugin : IDalamudPlugin
             MyHook.Instance?.Dispose();
             Logger.Info("plugin turned off");
             Chat.Print("[Hitbox Extend] Turned off");
+            Toasts.ShowQuest("Hitbox Extend Turned off",
+                    new QuestToastOptions() { PlaySound = true, DisplayCheckmark = true });
             Configuration.IsTurnedOn = false;
         }
         else if (args == "config")
