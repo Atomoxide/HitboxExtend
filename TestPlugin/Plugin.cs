@@ -82,7 +82,7 @@ public sealed class Plugin : IDalamudPlugin
         {
             MyHook.Initialize();
             Logger.Info("plugin turned on");
-            Chat.Print("[Hitbox Extend] Turned on");
+            Chat.Print("[Hitbox Extend] Turned on. You may want to leave and re-enter your current zone to reload the hitboxes of the targets around you.");
             Toasts.ShowQuest("Hitbox Extend Turned on",
                     new QuestToastOptions() { PlaySound = true, DisplayCheckmark = true });
             Configuration.IsTurnedOn = true;

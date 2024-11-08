@@ -7,7 +7,7 @@ namespace TestPlugin.Windows;
 
 public class ConfigWindow : Window, IDisposable
 {
-    private Configuration Configuration;
+    private Configuration configuration;
 
     // We give this window a constant ID using ###
     // This allows for labels being dynamic, like "{FPS Counter}fps###XYZ counter window",
@@ -25,7 +25,7 @@ public class ConfigWindow : Window, IDisposable
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
-        Configuration = plugin.Configuration;
+        configuration = plugin.Configuration;
     }
 
     public void Dispose() { }
@@ -33,12 +33,12 @@ public class ConfigWindow : Window, IDisposable
     public override void Draw()
     {
         // can't ref a property, so use a local copy
-        var configValue = Configuration.IsTurnedOn;
+        var configValue = configuration.IsTurnedOn;
         if (ImGui.Checkbox("Enable (non persistent)", ref configValue))
         {
-            Configuration.IsTurnedOn = configValue;
-            Configuration.UpdateStatus();
+            configuration.IsTurnedOn = configValue;
+            configuration.UpdateStatus();
         }
-        ImGui.Text("Change only applies to new selectable targets. \nYou need to leave the current map zone \nand then come back to refresh target hitboxes");
+        ImGui.Text("Change only applies to new selectable targets loaded to your current scene.");
     }
 }

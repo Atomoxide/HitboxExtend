@@ -1,8 +1,8 @@
 {
-    "Author": "Lorem Ipsum-dolor",
+    "Author": "Atomoxide",
     "Name": "Hitbox Extend",
-    "Punchline": "Extend the target hitbox such that melee classes can have better uptime",
-    "Description": "Extend the target hitbox by 3 meters (farthest allowed before your attack actions get invalidated by the server)",
+    "Punchline": "Bigger Hitbox!",
+    "Description": "Extend the target hitbox by 3 yards (farthest allowed before your attack actions get invalidated by the server)",
     "ApplicableVersion": "any",
     "Tags": [
         "cheat",

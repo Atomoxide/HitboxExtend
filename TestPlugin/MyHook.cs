@@ -27,7 +27,6 @@ public unsafe class MyHook : IDisposable
                     OnHitboxLoaded
                 );
 
-            // Nullable because this might not have been initialized from IFA above, e.g. the sig was invalid.
             _onHitboxLoadedHook?.Enable();
         }
         catch (Exception e)

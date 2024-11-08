@@ -20,11 +20,6 @@ public class MainWindow : Window, IDisposable
     public MainWindow(Plugin plugin, string cat)
         : base("About##With a hidden ID", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoResize)
     {
-        //SizeConstraints = new WindowSizeConstraints
-        //{
-        //    MinimumSize = new Vector2(375, 330),
-        //    MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
-        //};
         Size = new Vector2(375, 330);
         SizeCondition = ImGuiCond.Always;
 
