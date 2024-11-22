@@ -93,11 +93,10 @@ public unsafe class MyHook : IDisposable
             //Plugin.Logger.Info("Pointer:" + unknownAddr + "radius: " + unscaledRadius);
             GameObject** gameObjectPtr = (GameObject**)(unknownAddr + 0x8);
             GameObject* gameObject = *gameObjectPtr;
-            float* hitboxRadius = (float*)((ulong)gameObject + 0xD0);
+            //float* hitboxRadius = (float*)((ulong)gameObject + 0xD0);
             //Plugin.Logger.Info("Character Pointer: " + ((ulong)gameObjectPtr).ToString("X8") + " Character: " + ((ulong)gameObject).ToString("X8") + " radius: " + *hitboxRadius);
-            //gameObject->HitboxRadius += 3.0f;
-            *hitboxRadius += 3.0f;
-            Plugin.Logger.Info("Character Pointer: " + ((ulong)gameObjectPtr).ToString("X8") + " Character: " + ((ulong)gameObject).ToString("X8") + " radius: " + *hitboxRadius);
+            //*hitboxRadius += 3.0f;
+            gameObject->HitboxRadius += 3.0f;
         }
         catch (Exception ex)
         {

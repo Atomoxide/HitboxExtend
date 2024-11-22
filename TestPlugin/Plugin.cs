@@ -45,7 +45,7 @@ public sealed class Plugin : IDalamudPlugin
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
-            HelpMessage = "/hbe on: toggle on\n/hbe off: toggle off\n/hbe config: open config window"
+            HelpMessage = "\n/hbe on: toggle on\n/hbe off: toggle off\n/hbe config: open config window"
         });
 
         PluginInterface.UiBuilder.Draw += DrawUI;
